@@ -1,4 +1,4 @@
-# This is Munin plugin for http response time.
+# Munin plugin for http response time.
 
 
 1) Copy plugin file to plugins directory.
@@ -57,7 +57,7 @@ Starting Munin Node:                                       [  OK  ]
 
 
 
-# origin
+# Origin
 
 httpレスポンスタイムの内訳をグラフにしてみた | ツチノコブログ
 http://tsuchinoko.dmmlabs.com/?p=1442
