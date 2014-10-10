@@ -1,0 +1,91 @@
+#!/bin/sh
+: << =cut
+
+=head1 NAME
+
+curl_httpresp - Plugin to monitor http response time (with curl)
+
+=head1 AUTHOR
+
+Copyright 2014 "tsutii"
+
+=head1 LICENSE
+
+ISCL
+
+=head1 MAGIC MARKERS
+
+ #%# family=auto
+ #%# capabilities=autoconf
+
+=cut
+
+. $MUNIN_LIBDIR/plugins/plugin.sh
+
+URL=${URL:-"http://localhost/"}
+curl_bin=$(which curl)
+if [ "$1" = "autoconf" ]; then
+echo yes
+exit 0
+fi
+#
+if [ "$1" = "config" ] ; then
+echo "graph_args -r --lower-limit 0 ";
+echo "graph_title http response $URL";
+echo "graph_category http-response";
+echo "graph_info HTTP response time: $URL";
+echo 'graph_vlabel sec'
+echo "total.label total time"
+echo "total.draw AREA"
+echo "total.type GAUGE"
+echo "total.info total time"
+print_warning total
+print_critical total
+echo "starttransfer.label startransfer time"
+echo "starttransfer.draw AREA"
+echo "starttransfer.type GAUGE"
+echo "starttransfer.info startransfer time"
+print_warning starttransfer
+print_critical starttransfer
+echo "pretransfer.label pretransfer time"
+echo "pretransfer.draw AREA"
+echo "pretransfer.type GAUGE"
+echo "pretransfer.info pretransfer time"
+print_warning pretransfer
+print_critical pretransfer
+echo "redirect.label redirect time"
+echo "redirect.draw LINE1"
+echo "redirect.type GAUGE"
+echo "redirect.info redirect time"
+print_warning redirect
+print_critical redirect
+echo "appconnect.label appconnect time"
+echo "appconnect.draw LINE1"
+echo "appconnect.type GAUGE"
+echo "appconnect.info time to appconnect time"
+print_warning appconnect
+print_critical appconnect
+echo "connect.label connect time"
+echo "connect.draw AREA"
+echo "connect.type GAUGE"
+echo "connect.info time to connect time"
+print_warning connect
+print_critical connect
+echo "namelookup.label namelookup time"
+echo "namelookup.draw AREA"
+echo "namelookup.type GAUGE"
+echo "namelookup.info time to namelookup"
+print_warning namelookup
+print_critical namelookup
+exit 0
+fi
+#
+$curl_bin --location --output "/dev/null" -s -w \
+"namelookup.value %{time_namelookup}\n"\
+"connect.value %{time_connect}\n"\
+"appconnect.value %{time_appconnect}\n"\
+"pretransfer.value %{time_pretransfer}\n"\
+"redirect.value %{time_redirect}\n"\
+"starttransfer.value %{time_starttransfer}\n"\
+"total.value %{time_total}\n" $URL
+
